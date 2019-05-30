@@ -82,7 +82,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
 .container {
   @apply min-h-screen font-sans text-sm bg-gray-900 flex justify-center items-center text-center mx-auto;
 }
@@ -120,14 +120,15 @@ export default {
     @apply flex pl-4 pb-4 rounded w-full overflow-hidden;
 
     .img {
-      @apply p-0 m-0 h-full bg-gray-900;
+      @apply p-0 m-0 h-full bg-gray-300;
       object-fit: cover;
-      max-height: 100px;
+      max-height: 130px;
     }
   }
 
   &.list {
     flex-direction: column;
+    max-width: 700px;
   }
   &.grid {
     flex-direction: row;
@@ -142,9 +143,8 @@ export default {
 
         .img {
           flex: 3;
-          @apply p-0 m-0 h-full w-full bg-gray-900;
+          @apply p-0 m-0 h-full w-full bg-gray-300;
           object-fit: cover;
-          max-height: 250px;
         }
         .title {
           flex: 1;

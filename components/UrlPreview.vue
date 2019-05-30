@@ -1,17 +1,34 @@
 <template>
   <li class="item md:w-full">
-    <a :href="url" target="_blank">
+    <a :href="url" target="_blank" :class="{ loading: loading }">
       <template v-if="loading">
-        <div class="empty" style="min-height: 100px; min-width: 400px;">
+        <!--<div class="empty" style="min-height: 100px; min-width: 400px;">
           <strong style="width: 100%; text-align: center; padding: 5px;">loading...</strong>
+        </div>--->
+        <div class="img" />
+        <div class="title">
+          <div
+            class="header"
+            :style="{ 'max-width': `${(Math.random() + 0.5) * 300}px` }"
+          />
+          <div
+            class="description"
+            :style="{ 'max-width': `${(Math.random() + 0.5) * 300}px` }"
+          />
+          <div
+            class="description"
+            :style="{ 'max-width': `${(Math.random() + 0.5) * 300}px` }"
+          />
+          <div
+            class="publisher"
+            :style="{ 'max-width': `${(Math.random() + 0.5) * 100}px` }"
+          />
         </div>
       </template>
       <template v-else>
         <template v-if="!imgError && embed && embed.image">
           <img v-show="!imgLoaded" class="img" :src="embed.image" @load="onImageLoad" @error="onImgError">
-          <div v-if="imgLoaded" class="img empty">
-            <span>loading...</span>
-          </div>
+          <div v-if="imgLoaded" class="img loading" />
         </template>
         <div v-else class="img empty">
           <span>no image</span>
@@ -84,14 +101,11 @@ export default {
             image
             video
             date
-            sources
             publisher
             logo
           }
         }`
       })
-      // eslint-disable-next-line
-      console.log(res)
       if (res && res.data && res.data.data && res.data.data.embed) {
         this.embed = res.data.data.embed
       }
@@ -102,7 +116,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
 .item, a {
   transition: background-color 150ms ease-in-out;
   @apply text-left flex text-black no-underline rounded;
@@ -120,6 +134,7 @@ a:hover {
   min-height: 160px;
   object-fit: contain;
   object-position: center;
+  overflow: hidden;
   @apply p-4;
 }
 .items.list .img {
@@ -139,5 +154,62 @@ a:hover {
 }
 small {
   @apply text-gray-700;
+}
+.item a.loading {
+  min-height: 100px;
+  min-width: 400px;
+  overflow: hidden;
+  position: relative;
+
+  .img {
+    @apply bg-gray-300 !important;
+  }
+  .title {
+    @apply w-full pr-4;
+
+    div {
+      @apply bg-gray-300 mb-2 mr-4;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      height: 1em;
+      width: 100%;
+
+      &.header {
+        @apply bg-gray-400;
+      }
+    }
+  }
+}
+.item a {
+  &.loading,
+  .img.loading {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100vw;
+      background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.5) 15%, transparent 30%);
+      animation-duration: 1.5s;
+      animation-fill-mode: forwards;
+      animation-iteration-count: infinite;
+      animation-name: vueContentPlaceholdersAnimation;
+      animation-timing-function: linear;
+    }
+  }
+  .img.loading {
+    position: relative;
+  }
+}
+
+@keyframes vueContentPlaceholdersAnimation {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(100%, 0, 0);
+  }
 }
 </style>
