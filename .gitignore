@@ -84,3 +84,7 @@ dist
 sw.*
 
 .DS_Store
+
+# SQLite Datebase files
+*.sqlite
+*.db

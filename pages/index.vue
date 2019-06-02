@@ -19,12 +19,12 @@
       </div>
       <ul class="items" :class="mode">
         <UrlPreview
-          v-for="url in urls"
-          :key="url"
-          :url="url"
+          v-for="bookmark in bookmarks"
+          :key="bookmark.url"
+          :url="bookmark.url"
           class="item"
         />
-        <li v-if="urls.length < 1" class="item empty">
+        <li v-if="bookmarks.length < 1" class="item empty">
           <div class="empty-list">
             <strong class="flex w-full">Empty</strong>
             <small class="flex w-full">Paste a list of urls here</small>
@@ -44,17 +44,45 @@ export default {
   data() {
     return {
       urls: [],
-      mode: 'list'
+      mode: 'list',
+      bookmarks: []
     }
   },
   created() {
-    // eslint-disable-next-line
-    window.addEventListener('paste', this.onPaste)
+    try {
+      // eslint-disable-next-line
+      window.addEventListener('paste', this.onPaste)
+    } catch (err) {}
+
+    this.refetch()
   },
   beforeDestroy() {
-    window.removeEventListener('paste', this.onPaste)
+    try {
+      window.removeEventListener('paste', this.onPaste)
+    } catch (err) {}
   },
   methods: {
+    async refetch() {
+      const res = await this.$axios.post('http://localhost:3050', {
+        query: `{
+          bookmarks {
+            url
+            embed {
+              url
+              title
+              description
+              image
+              video
+              date
+              publisher
+              logo
+            }
+          }
+        }`
+      })
+      this.bookmarks = res.data.data.bookmarks
+      setTimeout(this.refetch, 10000)
+    },
     changeMode(mode) {
       this.mode = mode
     },
@@ -87,7 +115,7 @@ export default {
   @apply min-h-screen font-sans text-sm bg-gray-900 flex justify-center items-center text-center mx-auto;
 }
 .wrapper {
-  @apply shadow-xl bg-white rounded m-4;
+  @apply shadow-xl bg-white rounded-lg m-4;
   max-width: 1200px;
 }
 .control {

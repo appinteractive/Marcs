@@ -1,0 +1,32 @@
+type Embed {
+  url: String
+  targetUrl: String
+  type: String
+  title: String
+  author: String
+  publisher: String
+  date: String
+  description: String
+  image: String
+  audio: String
+  video: String
+  lang: String
+  logo: String
+  embed: String
+  sources: [String]
+}
+
+type Bookmark {
+  id: String
+  url: String!
+  embed: Embed
+}
+
+type Query {
+  embed(url: String!): Embed
+  bookmarks: [Bookmark]!
+}
+
+type Mutation {
+  createBookmark(url: String!): Bookmark
+}

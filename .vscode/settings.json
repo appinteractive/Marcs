@@ -1,0 +1,9 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "./server/bookmarks.sqlite",
+            "dialect": "SQLite",
+            "name": "Bookmarks"
+        }
+    ]
+}
