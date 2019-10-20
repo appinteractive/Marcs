@@ -27,11 +27,21 @@
       </template>
       <template v-else>
         <template v-if="!imgError && embed && embed.image">
-          <img v-show="!imgLoaded" class="img" :src="embed.image" @load="onImageLoad" @error="onImgError">
-          <div v-if="imgLoaded" class="img loading" />
+          <div v-show="!imgLoaded || embed.video" class="relative w-full border px-5">
+            <div class="media-container">
+              <img class="img" :src="embed.image.url" @load="onImageLoad" @error="onImgError">
+              <video
+                v-if="embed.video"
+                :src="embed.video"
+                :poster="embed.image.url"
+                controls
+              />
+            </div>
+          </div>
+          <div v-if="imgLoaded && !embed.video" class="img loading" />
         </template>
         <div v-else class="img empty">
-          <span>no image</span>
+          <span>no image</span   >
         </div>
         <div class="title">
           <strong>{{ embed.title || url | truncate(128) }}</strong>
@@ -40,7 +50,7 @@
           </small>
           <small style="display: flex; align-items: center; margin-top: 5px;">
             <!--{{ url | truncate(80) }}-->
-            <img :src="embed.logo" height="16" style="margin-right: 4px;">
+            <img :src="embed.logo.url" height="16" style="margin-right: 4px;">
             {{ embed.publisher }}
           </small>
         </div>
@@ -94,15 +104,19 @@ export default {
         url = `http://${url}`
       }
       const res = await this.$axios.post('http://localhost:3050', {
-        query: `{ 
+        query: `{
           embed(url:"${url}") {
             title
             description
-            image
+            image(width: 400) {
+              url
+            }
             video
             date
             publisher
-            logo
+            logo {
+              url
+            }
           }
         }`
       })
@@ -130,12 +144,22 @@ a:hover {
 }
 .img {
   display: block;
-  width: 250px;
-  min-height: 160px;
   object-fit: contain;
   object-position: center;
   overflow: hidden;
   @apply p-4;
+}
+.media-container {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 56.25%;
+  position: relative;
+  display: flex;
+}
+video {
+  display: flex;
+  width: 100%;
+  position: absolute;
 }
 .items.list .img {
   width: 150px;
