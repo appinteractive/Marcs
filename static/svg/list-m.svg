@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="13" height="5" x="9" y="3" fill="current"/>
+    <rect width="13" height="5" x="9" y="10" fill="current"/>
+    <rect width="13" height="5" x="9" y="17" fill="current"/>
+    <polygon fill="current" points="2 3 7 3 7 8 2 8 2 5.634"/>
+    <polygon fill="current" points="2 10 7 10 7 15 2 15 2 12.634"/>
+    <polygon fill="current" points="2 17 7 17 7 22 2 22 2 19.634"/>
+  </g>
+</svg>

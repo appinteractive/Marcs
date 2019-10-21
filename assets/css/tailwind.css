@@ -1,5 +1,30 @@
 @import "tailwindcss/base";
-
 @import "tailwindcss/components";
-
 @import "tailwindcss/utilities";
+
+
+body {
+  @apply bg-gray-100;
+}
+
+input:focus {
+  @apply outline-none;
+}
+
+.link {
+  @apply text-green-700 cursor-pointer;
+}
+
+.btn {
+  @apply py-3 px-8 text-base border border-gray-300 rounded;
+}
+.btn-primary {
+  @apply text-white bg-blue-700 border-none;
+}
+.btn-primary:hover {
+  @apply bg-blue-800;
+}
+
+.btn:focus {
+  @apply outline-none shadow-inner;
+}

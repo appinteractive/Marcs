@@ -1,75 +1,119 @@
 <template>
-  <section class="container">
-    <div class="wrapper">
-      <div class="control">
-        <a
-          class="ml-auto"
-          :class="{ active: mode === 'list' }"
-          @click.stop="changeMode('list')"
-        >
-          <img src="/svg/list.svg">
-        </a>
-        <a
-          class="mr-auto"
-          :class="{ active: mode === 'grid' }"
-          @click.stop="changeMode('grid')"
-        >
-          <img src="/svg/grid.svg">
-        </a>
-      </div>
-      <ul class="items" :class="mode">
-        <UrlPreview
-          v-for="url in urls"
-          :key="url"
-          :url="url"
-          class="item"
-        />
-        <li v-if="urls.length < 1" class="item empty">
-          <div class="empty-list">
-            <strong class="flex w-full">Empty</strong>
-            <small class="flex w-full">Paste a list of urls here</small>
-          </div>
-        </li>
-      </ul>
+  <section
+    class="container mx-auto pb-24 relative"
+    :class="[
+       `${mode}-${size}`
+    ]"
+  >
+    <div class="flex justify-end self-end items-end flex-col fixed px-3">
+      <a
+        class="cursor-pointer flex p-1"
+        :class="[ mode === 'list' ? 'text-gray-800' : 'text-gray-500' ]"
+        @click.stop="changeMode('list')"
+      >
+        <IcoListM class="h-6 w-6 fill-current" />
+      </a>
+      <a
+        class="cursor-pointer flex p-1"
+        :class="[ mode === 'grid' && size === 1 ? 'text-gray-800' : 'text-gray-500' ]"
+        @click.stop="changeMode('grid', 1)"
+      >
+
+        <IcoListL class="h-6 w-6 fill-current" />
+      </a>
+      <a
+        class="cursor-pointer flex p-1"
+        :class="[ mode === 'grid' && size === 2 ? 'text-gray-800' : 'text-gray-500' ]"
+        @click.stop="changeMode('grid', 2)"
+      >
+        <IcoGrid2 class="h-6 w-6 fill-current" />
+      </a>
+      <a
+        class="cursor-pointer flex p-1"
+        :class="[ mode === 'grid' && size === 3 ? 'text-gray-800' : 'text-gray-500' ]"
+        @click.stop="changeMode('grid', 3)"
+      >
+        <IcoGrid3 class="h-6 w-6 fill-current" />
+      </a>
     </div>
+    <ul
+      class="flex px-12"
+      :class="[
+        size === 1 ? 'flex-col' : 'flex-wrap'
+      ]"
+    >
+      <Embed
+        v-for="url in urls"
+        tag="li"
+        class="flex px-2"
+        :class="[
+          size === 1 && 'w-full justify-center',
+          size === 2 && 'w-1/2 justify-start',
+          size === 3 && 'w-1/3 justify-start',
+        ]"
+        :key="url"
+        :url="url"
+        :size="mode === 'list' ? 'M' : 'L'"
+      />
+      <li v-if="urls.length < 1" class="flex w-full justify-center items-center">
+        <svg class="h-10 w-10 m-3 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="current" d="M11.5 23l-8.5-4.535v-3.953l5.4 3.122 3.1-3.406v8.772zm1-.001v-8.806l3.162 3.343 5.338-2.958v3.887l-8.5 4.534zm-10.339-10.125l-2.161-1.244 3-3.302-3-2.823 8.718-4.505 3.215 2.385 3.325-2.385 8.742 4.561-2.995 2.771 2.995 3.443-2.242 1.241v-.001l-5.903 3.27-3.348-3.541 7.416-3.962-7.922-4.372-7.923 4.372 7.422 3.937v.024l-3.297 3.622-5.203-3.008-.16-.092-.679-.393v.002z"/></svg>
+        <div class="empty-list py-32">
+          <strong class="flex w-full text-gray-700">Empty</strong>
+          <small class="flex w-full text-gray-600">Paste a list of urls here</small>
+        </div>
+      </li>
+    </ul>
   </section>
 </template>
 
 <script>
-import UrlPreview from '~/components/UrlPreview'
+import IcoListM from '~/static/svg/list-m.svg'
+import IcoListL from '~/static/svg/list-l.svg'
+import IcoGrid2 from '~/static/svg/grid-x2.svg'
+import IcoGrid3 from '~/static/svg/grid-x3.svg'
+import Embed from '~/components/Embeds/Embed'
+
 export default {
   components: {
-    UrlPreview
+    IcoListM,
+    IcoListL,
+    IcoGrid2,
+    IcoGrid3,
+    Embed
   },
-  data() {
+  data () {
     return {
-      urls: [],
-      mode: 'list'
+      urls: [
+        // 'https://www.youtube.com/watch?v=RoGHVI-w9bE&feature=share',
+      ],
+      mode: 'grid',
+      size: 3
     }
   },
-  created() {
+  created () {
     // eslint-disable-next-line
     window.addEventListener('paste', this.onPaste)
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('paste', this.onPaste)
   },
   methods: {
-    changeMode(mode) {
+    changeMode (mode, size = 1) {
       this.mode = mode
+      this.size = size
     },
-    onPaste(e) {
+    onPaste (e) {
       const paste = (e.clipboardData || window.clipboardData).getData('text')
       try {
         const urls = paste.split(/\n/g).filter(n => n.length > 0)
         urls.forEach((url) => {
           url = url.trim()
           // eslint-disable-next-line
-          console.log(url, url.indexOf('http'))
-          if (url.indexOf(' ') >= 0 || url.indexOf('http') !== 0) {
+          console.log(url, url.includes('http'))
+          if (url.includes(' ') || url.indexOf('http') !== 0) {
             return
           }
-          if (this.urls.indexOf(url) < 0) {
+          if (!this.urls.includes(url)) {
             this.urls.push(url)
           }
         })
@@ -83,103 +127,32 @@ export default {
 </script>
 
 <style lang="postcss">
-.container {
-  @apply min-h-screen font-sans text-sm bg-gray-900 flex justify-center items-center text-center mx-auto;
-}
-.wrapper {
-  @apply shadow-xl bg-white rounded m-4;
-  max-width: 1200px;
-}
-.control {
-  display: flex;
-  @apply p-4 pr-0;
-
-  a {
-    @apply mr-4 w-full;
-    transition: all 150ms ease-in-out;
-    cursor: pointer;
-    opacity: 0.5;
-    justify-self: flex-end;
-    justify-content: center;
-
-    &:hover,
-    &.active {
-      opacity: 1;
+.grid-3 {
+  .embed-privacy {
+    .embed-privacy-logo,
+    .embed-privacy-title,
+    .embed-privacy-text {
+      display: none;
     }
-
-    &.active {
-      @apply bg-blue-200;
+    .btn {
+      @apply text-xs font-bold;
     }
   }
 }
-.items {
-  display: flex;
-  @apply list-none p-0 pr-4;
-
-  .item {
-    @apply flex pl-4 pb-4 rounded w-full overflow-hidden;
-
-    .img {
-      @apply p-0 m-0 h-full bg-gray-300;
-      object-fit: cover;
-      max-height: 130px;
+.grid-2 {
+  .embed-privacy {
+    .embed-privacy-logo,
+    .embed-privacy-title {
+      display: none;
     }
-  }
-
-  &.list {
-    flex-direction: column;
-    max-width: 700px;
-  }
-  &.grid {
-    flex-direction: row;
-    @apply flex flex-wrap;
-
-    .item {
-      @apply flex;
-
-      a {
-        @apply flex h-full w-full;
-        flex-direction: column;
-
-        .img {
-          flex: 3;
-          @apply p-0 m-0 h-full w-full bg-gray-300;
-          object-fit: cover;
-        }
-        .title {
-          flex: 1;
-          align-self: flex-start;
-        }
-      }
+    .embed-privacy-logo,
+    .embed-privacy-title,
+    .embed-privacy-text {
+      @apply text-xs text-center px-10;
     }
-  }
-}
-.item.empty {
-  @apply flex p-5 pt-0;
-  padding-right: 0;
-  min-width: 300px;
-  width: 100% !important;
-  text-align: center;
-}
-.empty-list {
-  @apply flex flex-col m-4 p-0;
-}
-@screen sm {
-  .items.grid .item {
-    @apply w-1/2;
-  }
-}
-@screen md {
-  .control {
-    justify-content: flex-end;
-    a {
-      max-width: 80px;
+    .btn {
+      @apply text-xs font-bold;
     }
-  }
-}
-@screen lg {
-  .items.grid .item {
-    @apply w-1/3;
   }
 }
 </style>
