@@ -10,12 +10,12 @@
       class="embed-card_preview bg-gray-200 flex flex-shrink-0 self-center justify-center relative overflow-hidden h-full placeholder"
     >
       <img
+        v-show="imageReady"
         class="object-cover object-scale-down w-full block"
         :src="image"
-        v-show="imageReady"
         @load="onImageLoaded"
         @error="onImageError"
-      />
+      >
       <h5 v-if="imageError" class="justify-center self-center flex w-full uppercase text-gray-500 text-xs">No Image</h5>
     </div>
     <div v-if="loading" class="p-5 flex h-full flex-col items-start">
@@ -52,7 +52,7 @@
             :alt="publisher"
             @load="onLogoLoaded"
             @error="onLogoError"
-          />
+          >
           <small v-if="hasSmallLogo" class="text-gray-600">{{ publisher }}</small>
         </div>
       </div>
@@ -64,14 +64,14 @@
 
 export default {
   props: {
-    url: { type: String },
-    title: { type: String },
-    description: { type: String },
-    image: { type: String },
-    video: { type: String },
-    audio: { type: String },
-    logo: { type: String },
-    publisher: { type: String },
+    url: { type: String, default: null },
+    title: { type: String, default: null },
+    description: { type: String, default: null },
+    image: { type: String, default: null },
+    video: { type: String, default: null },
+    audio: { type: String, default: null },
+    logo: { type: String, default: null },
+    publisher: { type: String, default: null },
     small: { type: Boolean },
     loading: { type: Boolean, default: true }
   },
@@ -83,21 +83,21 @@ export default {
     logoError: false
   }),
   methods: {
-    onImageLoaded() {
+    onImageLoaded () {
       this.imageError = false
       this.imageReady = true
     },
-    onImageError() {
+    onImageError () {
       this.imageError = true
     },
-    onLogoError() {
+    onLogoError () {
       this.logoError = true
     },
-    onLogoLoaded(e) {
+    onLogoLoaded (e) {
       this.hasSmallLogo = e.target.width / e.target.height <= 2
       this.logoError = false
       this.logoReady = true
-    },
+    }
   }
 }
 

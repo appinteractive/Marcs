@@ -10,9 +10,7 @@
       class="bg-black flex self-center justify-center overflow-hidden w-full pb-16/9 relative"
     >
       <div v-if="loading" class="absolute w-full h-full">
-        <div class="w-full h-full bg-gray-200 placeholder">
-
-        </div>
+        <div class="w-full h-full bg-gray-200 placeholder" />
       </div>
       <div v-else class="absolute w-full h-full">
         <div
@@ -36,17 +34,19 @@
           v-else-if="embed"
           class="w-full h-full"
         >
+          <!-- eslint-disable -->
           <div
             v-if="!doNotTrack || DTNAccepted"
-            v-html="embed"
             class="video absolute w-full h-full"
+            v-html="embed"
           />
+          <!-- eslint-enable -->
           <div
             v-else
             class="w-full h-full embed-privacy"
             @click.prevent.once="DTNAccepted = true"
           >
-            <img :src="image" class="block w-full h-full absolute" />
+            <img :src="image" class="block w-full h-full absolute">
             <div
               class="w-full h-full absolute flex flex-col items-center justify-center text-white"
               style="background-color: rgba(0,0,0,0.8)"
@@ -54,7 +54,7 @@
               <img
                 class="embed-privacy-logo h-10 mb-2"
                 :src="logo"
-              />
+              >
               <h3 class="embed-privacy-title text-2xl font-bold">
                 Privacy Warning
               </h3>
@@ -68,12 +68,12 @@
         </div>
         <div v-else class="w-full h-full bg-gray-300">
           <img
-            class="object-cover object-scale-down w-full h-full"
             v-show="!imageError && (image || logo)"
+            class="object-cover object-scale-down w-full h-full"
             :src="image ? image : logo"
             @load="onImageLoaded"
             @error="onImageError"
-          />
+          >
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@
               :alt="publisher"
               @load="onLogoLoaded"
               @error="onLogoError"
-            />
+            >
             <small v-if="hasSmallLogo" class="text-gray-600">{{ publisher }}</small>
           </div>
         </div>
@@ -125,16 +125,16 @@
 
 export default {
   props: {
-    url: { type: String },
-    title: { type: String },
-    type: { type: String },
-    description: { type: String },
-    image: { type: String },
-    video: { type: String },
-    audio: { type: String },
-    embed: { type: String },
-    logo: { type: String },
-    publisher: { type: String },
+    url: { type: String, default: null },
+    title: { type: String, default: null },
+    type: { type: String, default: null },
+    description: { type: String, default: null },
+    image: { type: String, default: null },
+    video: { type: String, default: null },
+    audio: { type: String, default: null },
+    embed: { type: String, default: null },
+    logo: { type: String, default: null },
+    publisher: { type: String, default: null },
     doNotTrack: { type: Boolean, default: true },
     small: { type: Boolean },
     loading: { type: Boolean, default: true }
@@ -148,21 +148,21 @@ export default {
     logoError: false
   }),
   methods: {
-    onImageLoaded() {
+    onImageLoaded () {
       this.imageError = false
       this.imageReady = true
     },
-    onImageError() {
+    onImageError () {
       this.imageError = true
     },
-    onLogoError() {
+    onLogoError () {
       this.logoError = true
     },
-    onLogoLoaded(e) {
+    onLogoLoaded (e) {
       this.hasSmallLogo = e.target.width / e.target.height <= 2
       this.logoError = false
       this.logoReady = true
-    },
+    }
   }
 }
 

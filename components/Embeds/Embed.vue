@@ -1,8 +1,8 @@
 <template>
-  <component v-if="!error" :is="tag">
+  <component :is="tag" v-if="!error">
     <component
-      class="w-full flex items-center"
       :is="embedComponent"
+      class="w-full flex items-center"
       :url="embed.url"
       :title="embed.title"
       :description="embed.description"
@@ -19,9 +19,9 @@
 </template>
 
 <script>
+import axios from 'axios'
 import EmbedM from '~/components/Embeds/EmbedM'
 import EmbedL from '~/components/Embeds/EmbedL'
-import axios from 'axios'
 
 export default {
   components: {
@@ -29,7 +29,7 @@ export default {
     EmbedL
   },
   props: {
-    url: { type: String },
+    url: { type: String, required: true },
     tag: { type: String, default: 'div' },
     size: {
       type: String,
@@ -40,21 +40,21 @@ export default {
     embed: {},
     error: false
   }),
+  computed: {
+    embedComponent () {
+      return this.size === 'M' ? 'EmbedM' : 'EmbedL'
+    }
+  },
   watch: {
     url: {
       immediate: true,
-      handler() {
+      handler () {
         this.getMeta(this.url)
       }
     }
   },
-  computed: {
-    embedComponent() {
-      return this.size === 'M' ? 'EmbedM' : 'EmbedL'
-    }
-  },
   methods: {
-    async getMeta(url) {
+    async getMeta (url) {
       const { data } = await axios.post('http://localhost:3050/', {
         query: `{
           embed(url: "${url}") {

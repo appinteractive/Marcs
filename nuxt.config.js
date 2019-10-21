@@ -63,9 +63,10 @@ export default {
         loader: 'vue-svg-loader',
         options: {
           svgo: {
-            cleanupListOfValues: true,
-            removeDimensions: true,
-            reusePaths: true
+            plugins: [
+              { cleanupListOfValues: true },
+              { removeDimensions: true }
+            ]
           }
         }
       })
